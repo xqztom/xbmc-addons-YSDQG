@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <category label="32000">
+      <setting label="32001" type="bool" id="data_source_yingshi_switch" default="true"/>
+      <setting label="32002" type="bool" id="data_source_yangshi_switch" default="true"/>
+      <setting label="32003" type="bool" id="data_source_bilibili_switch" default="true"/>
+      <setting label="32004" type="bool" id="data_source_zhibo_switch" default="true"/>
+      <setting label="32005" type="bool" id="data_source_dianshi_switch" default="true"/>
+      <setting label="32006" type="bool" id="data_source_alist_switch" default="true"/>
+    </category>   
+    <category label="32100">
+      <setting label="32101" type="bool" id="danmaku_switch" default="true"/>
+      <setting label="32102" type="bool" id="danmaku_dialog_switch" default="false"/>
+      <setting label="32103" type="slider" id="danmaku_font_size" default="40" range="5,5,100" option="int" />
+      <setting label="32104" type="slider" id="danmaku_duration" default="15" range="5,5,100" option="int" />
+      <setting label="32105" type="bool" id="source_dialog_switch" default="true"/>
+      <setting label="32106" type="bool" id="skip_opening_and_ending_switch" default="false"/>
+      <setting label="32107" type="slider" id="skip_opening_seconds" default="0" range="0,5,100" option="int" />
+      <setting label="32108" type="slider" id="skip_ending_seconds" default="0" range="0,5,100" option="int" />
+      <setting label="32109" type="slider" id="max_playback_records" default="50" range="5,5,100" option="int" />
+    </category>   
+    <category label="32200">
+      <setting label="32201" type="text" id="aliyundrive_refresh_token" default="https://mpimg.cn/down.php/c8f9e6ed2446c6d5c6973df99ff2fbe1.json"/>
+      <setting label="32202" type="bool" id="downloader_switch" default="true"/>
+      <setting label="32203" type="slider" id="downloader_connection" default="30" range="5,5,100" option="int" />
+      <setting label="32204" type="bool" id="aliyundrive_display_file_size_switch" default="true"/>
+    </category>   
+</settings>

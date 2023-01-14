@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>影视大全</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  </head>
+  <body>
+    <h2 style="text-align: center; margin-top: 10px;">影视大全</h2>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+      crossorigin="anonymous"
+    ></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <div style="margin: 0 auto; padding: 20px 20px 0 20px; max-width: 540px">
+      <div>
+        <label class="form-label" style="width: 100%"
+          >更新阿里云盘 refresh token
+        </label>
+        <div>
+          <input
+            type="text"
+            class="form-control"
+            id="aliyundrive_refresh_token"
+            placeholder="请输入token或http(s)地址"
+            style="float: left; margin-right: 1%; width: 79%"
+          />
+          <button
+            type="submit"
+            class="btn btn-primary"
+            style="float: left; width: 20%"
+            onClick="submit_aliyundrive_refresh_token()"
+          >
+            提交
+          </button>
+          <div style="clear: both" />
+        </div>
+      </div>
+      <div style="margin-top: 10px">
+        <label class="form-label" style="width: 100%"
+          >播放阿里云盘分享链接
+        </label>
+        <div>
+          <input
+            type="text"
+            class="form-control"
+            id="aliyundrive_share_url"
+            placeholder="请输入阿里云盘分享链接"
+            style="float: left; margin-right: 1%; width: 79%"
+          />
+          <button
+            type="submit"
+            class="btn btn-primary"
+            style="float: left; width: 20%"
+            onClick="submit_aliyundrive_share_url()"
+          >
+            提交
+          </button>
+          <div style="clear: both" />
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    let base_url = "{base_url}";
+
+    function submit_aliyundrive_refresh_token() {
+      let aliyundrive_refresh_token = document.getElementById(
+        "aliyundrive_refresh_token"
+      ).value;
+      let query = new URLSearchParams({
+        aliyundrive_refresh_token: aliyundrive_refresh_token,
+      });
+      let url = base_url + "/aliyundrive_refresh_token?" + query.toString();
+      submit(url);
+    }
+
+    function submit_aliyundrive_share_url() {
+      let aliyundrive_share_url = document.getElementById(
+        "aliyundrive_share_url"
+      ).value;
+      let query = new URLSearchParams({
+        aliyundrive_share_url: aliyundrive_share_url,
+      });
+      let url = base_url + "/aliyundrive_share_url?" + query.toString();
+      submit(url);
+    }
+
+    function submit(url) {
+      let xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function () {
+        if (this.readyState == 4) {
+          if (this.status == 200) {
+            Toastify({
+              text: "提交成功",
+              duration: 3000,
+              newWindow: true,
+              gravity: "bottom", 
+              position: "center", 
+              stopOnFocus: true, 
+              style: {
+                background: "#1E90FF",
+                "border-radius": "8px",
+              },
+            }).showToast();
+          } else {
+            Toastify({
+              text: "提交失败",
+              duration: 3000,
+              newWindow: true,
+              gravity: "bottom", 
+              position: "center", 
+              stopOnFocus: true, 
+              style: {
+                background: "#F08080",
+                "border-radius": "8px",
+              },
+            }).showToast();
+          }
+        }
+      };
+      xhr.open("GET", url);
+      xhr.send();
+    }
+  </script>
+</html>

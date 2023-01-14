@@ -1,0 +1,90 @@
+msgid ""
+msgstr ""
+
+msgctxt "#32000"
+msgid "data source setting"
+msgstr "数据源设置"
+
+msgctxt "#32001"
+msgid "data source yingshi switch"
+msgstr "影视"
+
+msgctxt "#32002"
+msgid "data source yangshi switch"
+msgstr "央视"
+
+msgctxt "#32003"
+msgid "data source bilibili switch"
+msgstr "哔哩哔哩"
+
+msgctxt "#32004"
+msgid "data source zhibo switch"
+msgstr "直播"
+
+msgctxt "#32005"
+msgid "data source dianshi switch"
+msgstr "电视直播"
+
+msgctxt "#32006"
+msgid "data source alist switch"
+msgstr "Alist网盘"
+
+msgctxt "#32100"
+msgid "play setting"
+msgstr "播放设置"
+
+msgctxt "#32101"
+msgid "danmaku switch"
+msgstr "弹幕开关"
+
+msgctxt "#32102"
+msgid "danmaku dialog switch"
+msgstr "弹幕源选择弹窗开关"
+
+msgctxt "#32103"
+msgid "danmaku font size"
+msgstr "弹幕字体大小"
+
+msgctxt "#32104"
+msgid "danmaku duration"
+msgstr "弹幕停留时长（秒）"
+
+msgctxt "#32105"
+msgid "source dialog switch"
+msgstr "播放源选择弹窗开关"
+
+msgctxt "#32106"
+msgid "skip opening and ending switch"
+msgstr "跳过片头片尾开关"
+
+msgctxt "#32107"
+msgid "skip opening seconds"
+msgstr "跳过片头多少秒"
+
+msgctxt "#32108"
+msgid "skip ending seconds"
+msgstr "跳过片尾多少秒"
+
+msgctxt "#32109"
+msgid "maximum number of playback records"
+msgstr "播放记录最多保存多少条"
+
+msgctxt "#32200"
+msgid "aliyundrive Setting"
+msgstr "阿里云盘设置"
+
+msgctxt "#32201"
+msgid "aliyundrive refresh token"
+msgstr "Token/外链设置"
+
+msgctxt "#32202"
+msgid "aliyundrive downloader switch"
+msgstr "原画加速开关"
+
+msgctxt "#32203"
+msgid "aliyundrive downloader connection"
+msgstr "原画加速并发连接数"
+
+msgctxt "#32204"
+msgid "aliyundrive display file size switch"
+msgstr "显示文件大小"

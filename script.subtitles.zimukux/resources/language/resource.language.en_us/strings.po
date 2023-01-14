@@ -1,0 +1,54 @@
+msgid ""
+msgstr ""
+
+msgctxt "#30100"
+msgid "general"
+msgstr "通用设置"
+
+msgctxt "#30101"
+msgid "ZiMuKuUrl"
+msgstr "字幕库链接"
+
+msgctxt "#30200"
+msgid "subpref"
+msgstr "偏好"
+
+msgctxt "#30210"
+msgid "subtype"
+msgstr "首选格式"
+
+msgctxt "#30211"
+msgid "none"
+msgstr "无"
+
+msgctxt "#30212"
+msgid "ass"
+msgstr "ass"
+
+msgctxt "#30213"
+msgid "srt"
+msgstr "srt"
+
+msgctxt "#30220"
+msgid "sublang"
+msgstr "首选语言"
+
+msgctxt "#30221"
+msgid "none"
+msgstr "无"
+
+msgctxt "#30222"
+msgid "chs"
+msgstr "简体中文"
+
+msgctxt "#30223"
+msgid "cht"
+msgstr "繁体中文"
+
+msgctxt "#30224"
+msgid "dualchs"
+msgstr "简英双轨"
+
+msgctxt "#30225"
+msgid "dualcht"
+msgstr "繁英双轨"
