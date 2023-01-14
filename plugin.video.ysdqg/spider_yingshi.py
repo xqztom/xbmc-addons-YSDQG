@@ -422,8 +422,7 @@ class Spideryingshi(Spider):
                 r = requests.get(url,headers=header)
                 jo = r.json()['list'][0]
                 cover = jo['vod_pic']
-                desc = jo['vod_content']
-
+                desc = jo['vod_content'].replace('<p>', '').replace('</p>','').replace('\r', '').replace('&nbsp; ','').replace('\u3000','').strip()
                 episinfos = jo['vod_play_url'].strip('$$$').split('$$$')
                 numepis = []
                 episList = []
@@ -642,7 +641,7 @@ class Spideryingshi(Spider):
             if 'video' in response.headers['Content-Type']:
                 response.close()
                 return self.SpeedInfo(url, header, tag, url)
-            if 'Location' in response.headers and response.text == '':
+            if 'Location' in response.headers and '#EXTM3U' not in response.text:
                 url = response.headers['Location']
                 response.close()
                 response = requests.get(url, headers=header, allow_redirects=False, verify=False, timeout=5)
@@ -800,7 +799,7 @@ class Spideryingshi(Spider):
                     name='七七：[{0}]/{1}'.format(remark.strip(), video['videoName'].strip()),
                     id=video['id'],
                     cover=video['videoCover'],
-                    description=video['brief'].replace('<p>', '').replace('</p>','').replace('\r','').replace('&nbsp; ','').replace('&\u3000','').strip(),
+                    description=video['brief'].replace('<p>', '').replace('</p>','').replace('\r', '').replace('&nbsp; ','').replace('\u3000','').strip(),
                     cast=video['starName'].replace(' ','').replace('声优','').replace(':',',').replace('：',',').replace(' ',',').strip(',').split(','),
                     year=int(video['year']),
                     params={
@@ -1165,10 +1164,10 @@ class Spideryingshi(Spider):
 
 #if __name__ == '__main__':
     #spider = Spideryingshi()
-    #res = spider.list_items(parent_item={'type': 'directory', 'id': '149690', 'name': '网飞：[HD]/穿靴子的猫2', 'cover': 'https://vip-9-cdn-cn.4kya.com/cdn-9/k/upload/vod/20230107-1/4e701be66745164d7e50caf487032e17.jpg', 'description': '', 'cast': [], 'director': '', 'area': '', 'year': 0, 'sources': [], 'danmakus': [], 'subtitles': [], 'params': {'type': 'video', 'pf': 'T4', 'api': 'http://81.68.89.191:60007/6rse/', 'num': 0}}, page=1)
+    #res = spider.list_items(parent_item={'type': 'directory', 'id': '4074', 'name': '爱看：[超清]/穿靴子的猫2', 'cover': 'https://p9-bk.byteimg.com/tos-cn-i-mlhdmxsy5m/0b357bc45cfc4d83a7c3eb8f3adb2d7b~tplv-mlhdmxsy5m-q75:0:0.image', 'description': '时隔11年，臭屁自大又爱卖萌的猫大侠回来了！如今的猫大侠（安东尼奥·班德拉斯 配音），依旧幽默潇...', 'cast': [], 'director': '', 'area': '', 'year': 2022, 'sources': [], 'danmakus': [], 'subtitles': [], 'params': {'type': 'video', 'pf': 'ik', 'num': 3}}, page=1)
     #res = spider.getDanm("https%3A%2F%2Fwww.bilibili.com%2Fbangumi%2Fplay%2Fep718240")
     #res = spider.search('穿靴子的猫2', page=1)
-    #res = spider.checkPurl({'playfrom': 'NetflixFF', 'pf': 'T4', 'url': '3134303635352D352D31', 'api': 'http://81.68.89.191:60007/6rse'},'1')
-    #res = spider.runSearch('黑', 'T4', 1, 3, '厂长@@@http://81.68.89.191:60007/6rse')
+    #res = spider.checkPurl({'playfrom': '', 'pf': 'ik', 'url': '4074-1-1'},'1')
+    #res = spider.runSearch('穿靴子的猫', 'ik', 1, 3, '')
     #res = spider.getCookie('zzy')
     #print(res)
