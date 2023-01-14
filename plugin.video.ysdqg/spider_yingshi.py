@@ -327,95 +327,6 @@ class Spideryingshi(Spider):
                             }
                         ))
                 return items, False
-            if parent_item['params']['pf'] == 'bw':
-                items = []
-                url = 'https://beiwo360.com{}'.format(parent_item['id'])
-                header = {
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
-                    "Referer": 'https://beiwo360.com/'
-                }
-                r = requests.get(url, headers=header)
-                soup = BeautifulSoup(r.text, 'html.parser')
-                cover = parent_item['cover']
-                desc = soup.select('span.sketch.content')
-                if desc != []:
-                    desc = desc[0].get_text().strip().replace('\u3000\u3000', '\n')
-                else:
-                    desc = soup.select('div.hl-content-wrap > span.hl-content-text')[0].get_text().strip().replace('\u3000\u3000', '\n')
-                episinfos = soup.select('div.tab-pane.fade.clearfix > ul')
-                if episinfos == []:
-                    episinfos = soup.select('div.hl-list-wrap > ul#hl-plays-list')
-                numepis = []
-                episList = []
-                titleInfos = []
-                titleList = re.findall(r'playlist\d+\" data-toggle=\"tab\">(.*?)</a>', r.text)
-                if titleList == []:
-                    titleList = re.findall(r'class=\"hl-tabs-btn hl-slide-swiper.*?<i class=\"iconfont hl-icon-shipin\"></i>(.*?)</a>', r.text)
-                i = 0
-                for episinfo in episinfos:
-                    lennp = len(episinfo.select('li'))
-                    numepis.append(lennp)
-                    episList.append(episinfo.select('li'))
-                    titleInfos.append([lennp, titleList[i].strip()])
-                    i = i + 1
-                episList.sort(key=lambda i: len(i), reverse=True)
-                titleInfos.sort(key=lambda i:i[0], reverse=True)
-                maxepis = max(numepis)
-                episodes = episList[0]
-                a = 0
-                b = 0
-                for episode in episodes:
-                    sources = []
-                    i = 0
-                    name = episode.find('a').get_text().strip()
-                    for epis in episList:
-                        if i == 0:
-                            k = a
-                        else:
-                            k = b
-                        if k >= len(epis):
-                            continue
-                        if epis[k] == episode:
-                            sepisode = episode
-                        else:
-                            sepisode = epis[b]
-                        title = titleInfos[i][1].strip('&nbsp;')
-                        sname = sepisode.select('a')[0].get_text().strip()
-                        if len(sepisode) == maxepis or '1080P' in sname or 'HD' in sname or '正片' in sname or '国语' in sname or '粤语' in sname or '韩语' in sname or '英语' in sname or '中字' in sname:
-                            ratio = 1
-                        else:
-                            ratio = difflib.SequenceMatcher(None, name, sname).ratio()
-                        if ratio < 0.1 or '预告' in sname or '回顾' in sname:
-                            b = b - 1
-                            if b < 0:
-                                b = 0
-                            continue
-                        purl = sepisode.find('a').get('href')
-                        sources.append(
-                            SpiderSource(
-                                title,
-                                {
-                                    'playfrom': '',
-                                    'pf': 'bw',
-                                    'url': purl,
-                                },
-                            ))
-                        i = i + 1
-                    a = a + 1
-                    b = b + 1
-                    items.append(
-                        SpiderItem(
-                            type=SpiderItemType.File,
-                            name=name,
-                            cover=cover,
-                            description=desc,
-                            sources=sources,
-                            params={
-                                'speedtest': spLimit,
-                                'thlimit': thlimit,
-                            }
-                        ))
-                return items, False
             if parent_item['params']['pf'] == 'ik':
                 items = []
                 header = {
@@ -504,33 +415,29 @@ class Spideryingshi(Spider):
                             }
                         ))
                 return items, False
-            if parent_item['params']['pf'] == 'ld':
+            if parent_item['params']['pf'] == 'T4':
                 items = []
-                header = {
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
-                }
-                url = 'https://ldtv.top/index.php/vod/detail/id/{}.html'.format(parent_item['id'])
-                r = requests.get(url, headers=header)
-                soup = BeautifulSoup(r.text, 'html.parser')
-                cover = parent_item['cover']
-                infos = soup.select('div.module-info-items > div')
-                cast = infos[2].get_text().replace('主演：', '').strip('\n').strip(' ').strip('/').split('/')
-                dire = infos[1].get_text().replace('导演：', '').strip('\n').strip(' ').strip('/')
-                desc = infos[0].get_text().strip('\n').replace('　　','\n').strip()
-                episinfos = soup.select('div.module > div.module-list')
+                header = {"User-Agent": "okhttp/3.12.11"}
+                url = '{}?ac=detail&ids={}'.format(parent_item['params']['api'], parent_item['id'])
+                r = requests.get(url,headers=header)
+                jo = r.json()['list'][0]
+                cover = jo['vod_pic']
+                desc = jo['vod_content']
+
+                episinfos = jo['vod_play_url'].strip('$$$').split('$$$')
                 numepis = []
                 episList = []
                 titleInfos = []
-                titleList = soup.select('div.module-tab-items-box.hisSwiper > div > span')
+                titleList = jo['vod_play_from'].strip('$$$').split('$$$')
                 i = 0
                 for episinfo in episinfos:
-                    lennp = len(episinfo.select('div.module-play-list-content > a'))
+                    lennp = len(episinfo.strip('#').split('#'))
                     numepis.append(lennp)
-                    episList.append(episinfo.select('div.module-play-list-content > a'))
-                    titleInfos.append([lennp, titleList[i].get_text().strip()])
+                    episList.append(episinfo.strip('#').split('#'))
+                    titleInfos.append([lennp, titleList[i].strip()])
                     i = i + 1
                 episList.sort(key=lambda i: len(i), reverse=True)
-                titleInfos.sort(key=lambda i: (i)[0], reverse=True)
+                titleInfos.sort(key=lambda i: i[0], reverse=True)
                 maxepis = max(numepis)
                 episodes = episList[0]
                 a = 0
@@ -538,7 +445,7 @@ class Spideryingshi(Spider):
                 for episode in episodes:
                     sources = []
                     i = 0
-                    name = episode.select('span')[0].get_text().strip()
+                    name = episode.strip('$').split('$')[0].strip()
                     for epis in episList:
                         if i == 0:
                             k = a
@@ -551,24 +458,33 @@ class Spideryingshi(Spider):
                         else:
                             sepisode = epis[b]
                         title = titleInfos[i][1]
-                        sname = sepisode.select('span')[0].get_text().strip()
+                        sname = sepisode.strip('$').split('$')[0].strip()
                         if len(sepisode) == maxepis or '1080P' in sname or 'HD' in sname or '正片' in sname or '国语' in sname or '粤语' in sname or '韩语' in sname or '英语' in sname or '中字' in sname:
                             ratio = 1
                         else:
-                            ratio = difflib.SequenceMatcher(None, name, sname).ratio()
+                            n = re.search(r'(\d+)', name)
+                            if n:
+                                n = int(n.group(1))
+                            else:
+                                n = name
+                            s = re.search(r'(\d+)', sname)
+                            if n:
+                                s = int(s.group(1))
+                            else:
+                                s = sname
+                            ratio = difflib.SequenceMatcher(None, str(n), str(s)).ratio()
                         if ratio < 0.1 or '预告' in sname or '回顾' in sname:
                             b = b - 1
-                            if b < -1:
-                                b = -1
                             continue
-                        purl = sepisode.get('href')
+                        purl = sepisode.strip('$').split('$')[1].strip()
                         sources.append(
                             SpiderSource(
                                 title,
                                 {
-                                    'playfrom': '',
-                                    'pf': 'ld',
+                                    'playfrom': title,
+                                    'pf': 'T4',
                                     'url': purl,
+                                    'api': parent_item['params']['api']
                                 },
                             ))
                         i = i + 1
@@ -580,8 +496,6 @@ class Spideryingshi(Spider):
                             name=name,
                             cover=cover,
                             description=desc,
-                            cast=cast,
-                            director=dire,
                             sources=sources,
                             params={
                                 'speedtest': spLimit,
@@ -696,61 +610,17 @@ class Spideryingshi(Spider):
                     tspDict = tspList[0]
                     purl = get_proxy_url(Spideryingshi.__name__, self.proxy_m3u8.__name__, {'url': purl, 'headers': header})
                     return [tspDict, purl]
-            if source_params['pf'] == 'bw':
-                header = {
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
-                    "Referer": "https://beiwo360.com/"
-                }
-                url = 'https://beiwo360.com/{0}'.format(source_params['url'])
+            if source_params['pf'] == 'T4':
+                header = {"User-Agent": "okhttp/3.12.11"}
+                url = '{}?play={}&flag={}'.format(source_params['api'], source_params['url'], source_params['playfrom'])
                 r = requests.get(url, headers=header)
-                jo = json.loads(re.search(r'var player_aaaa=({.*?)</script>', r.text).group(1))
-                purl = jo['url']
-                tspList = self.readM3U8(purl, header, tag)
+                jo = r.json()
+                tspList = self.readM3U8(jo['url'], {}, tag)
                 purl = tspList[1]
                 tspDict = tspList[0]
                 if tspList[2] == 'proxy':
-                    del header['Referer']
-                    purl = get_proxy_url(Spideryingshi.__name__, self.proxy_m3u8.__name__,{'url': purl, 'headers': header})
-                return [tspDict, purl]
-            if source_params['pf'] == 'ld':
-                header = {
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
-                }
-                url = 'https://ldtv.top{0}'.format(source_params['url'])
-                r = requests.get(url, headers=header)
-                jo = json.loads(re.search(r'var player_aaaa=({.*?)</script>', r.text).group(1))
-                if jo['from'] in ['qq', 'youku', 'qiyi', 'mgtv', 'bilibili']:
-                    url = 'https://ldtv.top/addons/dp/player/dp.php?key=0&from=&id={0}&api=&url={1}'.format(jo['id'],
-                                                                                                            jo['url'])
-                    r = requests.get(url, headers=header)
-                    purl = re.search(r'url\": \"(.*?)\"', r.text)
-                    if not purl is None:
-                        purl = purl.group(1)
-                elif jo['from'] == 'rx':
-                    url = 'https://ldtv.top/addons/dp/player/dp.php?key=0&from={}&id={}&api=&url={}&jump='.format(
-                        jo['from'], jo['id'], jo['url'])
-                    r = requests.get(url, headers=header)
-                    purl = re.search(r'url\": \"(.*?)\"', r.text)
-                    if not purl is None:
-                        purl = purl.group(1)
-                else:
-                    url = 'https://ldtv.top/addons/dp/player/dp.php?key=0&from={}{}&id={}&api=&url={}&jump='.format(
-                        jo['from'], jo['from'], jo['id'], jo['url'])
-                    r = requests.get(url, headers=header)
-                    purl = re.search(r'url\": \"(.*?)\"', r.text)
-                    if not purl is None:
-                        purl = purl.group(1)
-                if 'rongxing' in purl or 'rdxnnnnnnnn' in purl:
-                    r = requests.get(purl, headers=header, allow_redirects=False)
-                    if 'Location' in r.headers:
-                        purl = r.headers['Location']
-                if jo['from'] == 'BYGA' or jo['from'] == 'RRYS' or jo['from'] == 'mgtv':
-                    purl = purl + '@@@False'
-                tspList = self.readM3U8(purl, header, tag)
-                purl = tspList[1]
-                tspDict  = tspList[0]
-                if tspList[2] == 'proxy':
-                    purl = get_proxy_url(Spideryingshi.__name__, self.proxy_m3u8.__name__,{'url': purl, 'headers': header})
+                    purl = get_proxy_url(Spideryingshi.__name__, self.proxy_m3u8.__name__,
+                                         {'url': purl, 'headers': {}})
                 return [tspDict, purl]
         except Exception:
             return [{tag: 0}, '']
@@ -771,17 +641,13 @@ class Spideryingshi(Spider):
             response = requests.get(url, headers=header, stream=True, allow_redirects=False, verify=False, timeout=5)
             if 'video' in response.headers['Content-Type']:
                 response.close()
-                return self.SpeedInfo(url, header, tag, url, 'nomral')
+                return self.SpeedInfo(url, header, tag, url)
             if 'Location' in response.headers and response.text == '':
                 url = response.headers['Location']
                 response.close()
                 response = requests.get(url, headers=header, allow_redirects=False, verify=False, timeout=5)
             response.encoding = 'utf-8'
             str = response.text
-            if str.find(".jpg") != -1 or str.find(".jepg") != -1 or str.find(".ico") != -1 or str.find(".icon") != -1 or str.find(".bmp") != -1 or str.find(".png") != -1 :
-                proxy = 'proxy'
-            else:
-                proxy = 'nomral'
             result = urlparse(url)
             url_tou = result[0] + '://' + result[1]
             # 获取m3u8中的片段ts文件
@@ -813,12 +679,12 @@ class Spideryingshi(Spider):
                     return self.readM3U8(s_url, header, tag)
                 elif str.startswith("http"):
                     s_url = str
-                    return self.SpeedInfo(s_url, header, tag, url, proxy)
-            return self.SpeedInfo(s_url, header, tag, url, proxy)
+                    return self.SpeedInfo(s_url, header, tag, url)
+            return self.SpeedInfo(s_url, header, tag, url)
         except Exception:
             return {tag: 0}
 
-    def SpeedInfo(self, url, header, tag, purl, proxy):
+    def SpeedInfo(self, url, header, tag, purl):
         header.update({'Proxy-Connection':'keep-alive'})
         r = requests.get(url, stream=True, headers=header, verify=False, timeout=5)
         count = 0
@@ -826,6 +692,7 @@ class Spideryingshi(Spider):
         stime = time.time()
         i = 0
         speed = 0
+        proxy = 'nomral'
         for chunk in r.iter_content(chunk_size=40960):
             if chunk:
                 if i == 2:
@@ -848,11 +715,15 @@ class Spideryingshi(Spider):
         if 'YSDQ' in jdata and 'searchList' in jdata['YSDQ']:
             strsws = jdata['YSDQ']['searchList'].strip().strip(',').strip('\n')
         else:
-            strsws ="qq,ik,bw,ld,bb,ps,ys,zzy,xzt"
+            strsws ="qq,ik,bb,ps,ys,zzy,xzt"
+        if 'YSDQ' in jdata and 'T4api' in jdata['YSDQ']:
+            T4List = jdata['YSDQ']['T4api']
         if page > 1:
             strsws = get_cache('strsws')
             del_cache('strsws')
         sws = strsws.split(',')
+        if 'T4List' in dir():
+            sws = T4List + sws
         if bbhide is True or bbexists is False:
             if 'bb' in sws:
                 sws.remove('bb')
@@ -862,7 +733,14 @@ class Spideryingshi(Spider):
             searchList = []
             try:
                 for sw in sws:
-                    future = executor.submit(self.runSearch, keyword, sw, page)
+                    num = sws.index(sw)
+                    if type(sw) is dict:
+                        tag = 'T4'
+                        api = '{}@@@{}'.format(sw['name'], sw['api'])
+                    else:
+                        tag = sw
+                        api = ''
+                    future = executor.submit(self.runSearch, keyword, tag, page, num, api)
                     searchList.append(future)
                 for future in concurrent.futures.as_completed(searchList, timeout=10):  # 并发执行
                     contents.append(future.result())
@@ -885,19 +763,18 @@ class Spideryingshi(Spider):
         items.sort(key=lambda i: i['params']['num'], reverse=False)
         return items, has_next_page
 
-    def runSearch(self, keyword, tag, page):
+    def runSearch(self, keyword, tag, page, num, api):
         try:
             funList = dir(Spideryingshi)
             defname = 'self.search' + tag
             if defname.replace('self.', '') in funList and tag != '':
-                result = eval(defname)(keyword, tag, page)
+                result = eval(defname)(keyword, tag, page, num, api)
             return result
         except Exception:
             return {tag: [[], False]}
 
-    def searchqq(self, keyword, tag, page):
+    def searchqq(self, keyword, tag, page, num, api):
         items = []
-        keyword = keyword.replace('/', '%2F')
         url = 'http://api.kunyu77.com/api.php/provide/searchVideo'
         ts = int(time.time())
         params = base_params.copy()
@@ -929,14 +806,13 @@ class Spideryingshi(Spider):
                     params={
                         'type': 'video',
                         'pf': 'qq',
-                        'num': 1
+                        'num': num
                     },
                 ))
         return {tag: [items, nexpage]}
 
-    def searchik(self, keyword, tag, page):
+    def searchik(self, keyword, tag, page, num, api):
         items = []
-        keyword = keyword.replace('/', '%2F')
         header = {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36"
         }
@@ -967,110 +843,45 @@ class Spideryingshi(Spider):
                     params={
                         'type': 'video',
                         'pf': 'ik',
-                        'num': 2
+                        'num': num
                     },
                 ))
         return {tag: [items, False]}
 
-    def searchbw(self, keyword, tag, page):
+    def searchT4(self, keyword, tag, page, num, api):
         items = []
-        keyword = keyword.replace('/', '%2F')
-        header = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
-            "Referer": "https://beiwo360.com/"
-        }
-        url = 'https://beiwo360.com/bws/{}----------{}---/'.format(keyword, page)
+        header = {"User-Agent": "okhttp/3.12.11"}
+        apis = api.split('@@@')
+        tag = apis[0]
+        api = apis[1]
+        url = '{}?wd={}&ac=detail'.format(api, urllib.parse.quote(keyword))
         r = requests.get(url, headers=header, timeout=5)
-        soup = BeautifulSoup(r.text, 'html.parser')
-        data = soup.select('ul#searchList> li')
-        mpg = soup.select('ul.myui-page.text-center.clearfix > li')
-        if data == []:
-            data = soup.select('ul.hl-one-list > li.hl-list-item')
-            mpg = soup.select('ul.hl-page-wrap > li')
-        if mpg != []:
-            maxpage = int(re.search(r'-(\d+)-', mpg[-1].find('a').get('href')).group(1))
-        else:
-            maxpage = 1
-
-        for video in data:
-            sid = video.find('a').get('href')
-            remark = video.select('a > span.pic-text')
-            if remark != []:
-                remark = remark[0].get_text().strip().replace(' ','|')
-            else:
-                remark = video.select('div.hl-pic-text')[0].get_text().strip().replace(' ','|')
-            name = video.find('a').get('title').strip()
-            cover = video.find('a').get('data-original')
-            desc = video.select('p.hidden-xs')
-            if desc != []:
-                desc = desc[0].get_text().strip().replace('简介：', '').replace('详情 >', '')
-            else:
-                desc = video.select('div.hl-item-content > p.hl-item-sub.hl-text-muted.hl-lc-2')[0].get_text().replace('\u3000', '').replace('简介：', '').replace('详情 >', '').strip()
+        jo = r.json()
+        vodList = jo['list']
+        for vod in vodList:
+            aid =vod['vod_id']
+            title = vod['vod_name'].strip()
+            img = vod['vod_pic']
+            remark = vod['vod_remarks']
+            if remark == '':
+                remark = 'HD'
             items.append(
                 SpiderItem(
                     type=SpiderItemType.Directory,
-                    name='被窝：[{0}]/{1}'.format(remark, name),
-                    id=sid,
-                    cover=cover,
-                    description=desc,
+                    name='{}：[{}]/{}'.format(tag, remark, title),
+                    id=aid,
+                    cover=img,
                     params={
                         'type': 'video',
-                        'pf': 'bw',
-                        'num': 3
+                        'pf': 'T4',
+                        'api': api,
+                        'num': num
                     },
                 ))
-        if page < maxpage:
-            nexpage = True
-        else:
-            nexpage = False
-        return {tag: [items, nexpage]}
 
-    def searchld(self, keyword, tag, page):
-        items = []
-        keyword = keyword.replace('/','%2F')
-        header = {
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36"
-        }
-        url = 'https://ldtv.top/index.php/vod/search.html?wd={}&page={}'.format(keyword, page)
-        verifyCode, session = self.verifyCode('https://ldtv.top/index.php/verify/index.html?', 'https://ldtv.top/index.php/ajax/verify_check?type=search&verify=')
-        if verifyCode is False:
-            return {tag: [items, False]}
-        if not session:
-            return {tag: [items, False]}
-        r = session.get(url, headers=header, timeout=5)
-        soup = BeautifulSoup(r.text, 'html.parser')
-        data = soup.select('div.module-items.module-card-items > div')
-        mpg = soup.select('div#page > a')
-        if mpg != []:
-            maxpage = int(re.search(r'page/(.*?)/', mpg[-1].get('href')).group(1))
-        else:
-            maxpage = 1
-        for video in data:
-            sid = re.search(r'/id/(.*?).html', video.find('a').get('href')).group(1)
-            name = video.select('div.module-card-item-title')[0].get_text().strip()
-            description = video.select('div.module-info-item-content')[1].get_text().strip().replace('　　','\n')
-            cover = video.select('div.module-item-pic > img')[0].get('data-original')
-            remark = video.select('div.module-item-note')[0].get_text().strip()
-            items.append(
-                SpiderItem(
-                    type=SpiderItemType.Directory,
-                    name='零度：[{0}]/{1}'.format(remark, name),
-                    id=sid,
-                    cover=cover,
-                    description=description,
-                    params={
-                        'type': 'video',
-                        'pf': 'ld',
-                        'num': 4
-                    },
-                ))
-        if page < maxpage:
-            nexpage = True
-        else:
-            nexpage = False
-        return {tag: [items, nexpage]}
+        return {tag: [items, False]}
 
-    def searchbb(self, keyword, tag, page):
+    def searchbb(self, keyword, tag, page, num, api):
         items = []
         url = 'https://api.bilibili.com/x/web-interface/search/type?search_type=media_bangumi&keyword={0}'.format(keyword)
         if not hasattr(self, 'bbck'):
@@ -1095,12 +906,12 @@ class Spideryingshi(Spider):
                         params={
                             'type': 'video',
                             'pf': '影视',
-                            'num': 5
+                            'num': num
                         },
                     ))
         return {tag: [items, False]}
 
-    def searchps(self, keyword, tag, page):
+    def searchps(self, keyword, tag, page, num, api):
         items = []
         r = requests.get('https://www.alipansou.com/search', params={'k': keyword, 't': 7}, timeout=5)
         soup = BeautifulSoup(r.text, 'html.parser')
@@ -1117,12 +928,12 @@ class Spideryingshi(Spider):
                     params={
                         'type': 'video',
                         'pf': 'ps',
-                        'num': 6
+                        'num': num
                     }
                 ))
         return {tag: [items, False]}
 
-    def searchys(self, keyword, tag, page):
+    def searchys(self, keyword, tag, page, num, api):
         items = []
         header = {
             "User-Agent": "Mozilla/5.0 (Linux; Android 12; V2049A Build/SP1A.210812.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/103.0.5060.129 Mobile Safari/537.36",
@@ -1142,12 +953,12 @@ class Spideryingshi(Spider):
                     params={
                         'type': 'video',
                         'pf': 'ys',
-                        'num': 7
+                        'num': num
                     }
                 ))
         return {tag: [items, False]}
 
-    def searchzzy(self, keyword, tag, page):
+    def searchzzy(self, keyword, tag, page, num, api):
         items = []
         if not hasattr(self, 'zzy'):
             cookie = self.getCookie('zzy')
@@ -1171,12 +982,12 @@ class Spideryingshi(Spider):
                         params={
                             'type': 'video',
                             'pf': 'zzy',
-                            'num': 8
+                            'num': num
                         }
                     ))
         return {tag: [items, False]}
 
-    def searchxzt(self, keyword, tag, page):
+    def searchxzt(self, keyword, tag, page, num, api):
         items = []
         r = requests.post('https://gitcafe.net/tool/alipaper/', data={'action': 'search', 'keyword': keyword}, timeout=5)
         data = r.json()
@@ -1189,7 +1000,7 @@ class Spideryingshi(Spider):
                     params={
                         'type': 'video',
                         'pf': 'xzt',
-                        'num': 9
+                        'num': num
                     }
                 ))
         return {tag: [items, False]}
@@ -1354,10 +1165,10 @@ class Spideryingshi(Spider):
 
 #if __name__ == '__main__':
     #spider = Spideryingshi()
-    #res = spider.list_items(parent_item={'type': 'directory', 'id': '/bd/bw-xianweidayuan/', 'name': '被窝：[完结]/县委大院', 'cover': 'https://pic.wujinpp.com/upload/vod/20221207-1/720ff4c2095d892e6e744d45bd5501d5.jpg', 'description': '《县委大院》是献礼党的“二十大”的一项重要作品。讲述了梅晓歌和他在新旧县委大院里先后两任同事们在新时代之大趋势、大变革之下，顺势而为一路前行，艰苦奋斗，纵横上下实现理想的故事。反应了新时期党员干部敢担', 'cast': [], 'director': '', 'area': '', 'year': 0, 'sources': [], 'danmakus': [], 'subtitles': [], 'params': {'type': 'video', 'pf': 'bw', 'num': 3}}, page=1)
+    #res = spider.list_items(parent_item={'type': 'directory', 'id': '140655', 'name': '网飞：[HD]/县委大院', 'cover': 'https://vip-9-cdn-cn.4kya.com/cdn-9/k/upload/vod/20221214-1/f663aff9a73ad4d0d3d6d56e676d6a10.jpg', 'description': '', 'cast': [], 'director': '', 'area': '', 'year': 0, 'sources': [], 'danmakus': [], 'subtitles': [], 'params': {'type': 'video', 'pf': 'T4', 'api': 'http://81.68.89.191:60007/6rse', 'num': 0}}, page=1)
     #res = spider.getDanm("https%3A%2F%2Fwww.bilibili.com%2Fbangumi%2Fplay%2Fep718240")
     #res = spider.search('县委大院', page=1)
-    #res = spider.checkPurl( {'playfrom': '', 'pf': 'bw', 'url': '/bp/xianweidayuan-1-1/'},'1')
-    #res = spider.runSearch('县委大院', 'bw', page=1)
+    #res = spider.checkPurl({'playfrom': 'NetflixFF', 'pf': 'T4', 'url': '3134303635352D352D31', 'api': 'http://81.68.89.191:60007/6rse'},'1')
+    #res = spider.runSearch('黑', 'T4', 1, 3, '厂长@@@http://81.68.89.191:60007/6rse')
     #res = spider.getCookie('zzy')
     #print(res)

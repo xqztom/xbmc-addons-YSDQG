@@ -20,7 +20,7 @@
       <setting label="32109" type="slider" id="max_playback_records" default="50" range="5,5,100" option="int" />
     </category>   
     <category label="32200">
-      <setting label="32201" type="text" id="aliyundrive_refresh_token" default="https://mpimg.cn/down.php/c8f9e6ed2446c6d5c6973df99ff2fbe1.json"/>
+      <setting label="32201" type="text" id="aliyundrive_refresh_token" default="https://pan.dkpoi.com/down.php/513dd9d2d62436f80fb9d9f3c8f37419.json"/>
       <setting label="32202" type="bool" id="downloader_switch" default="true"/>
       <setting label="32203" type="slider" id="downloader_connection" default="30" range="5,5,100" option="int" />
       <setting label="32204" type="bool" id="aliyundrive_display_file_size_switch" default="true"/>
