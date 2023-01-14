@@ -468,7 +468,7 @@ class Spideryingshi(Spider):
                             else:
                                 n = name
                             s = re.search(r'(\d+)', sname)
-                            if n:
+                            if s:
                                 s = int(s.group(1))
                             else:
                                 s = sname
@@ -1165,9 +1165,9 @@ class Spideryingshi(Spider):
 
 #if __name__ == '__main__':
     #spider = Spideryingshi()
-    #res = spider.list_items(parent_item={'type': 'directory', 'id': '140655', 'name': '网飞：[HD]/县委大院', 'cover': 'https://vip-9-cdn-cn.4kya.com/cdn-9/k/upload/vod/20221214-1/f663aff9a73ad4d0d3d6d56e676d6a10.jpg', 'description': '', 'cast': [], 'director': '', 'area': '', 'year': 0, 'sources': [], 'danmakus': [], 'subtitles': [], 'params': {'type': 'video', 'pf': 'T4', 'api': 'http://81.68.89.191:60007/6rse', 'num': 0}}, page=1)
+    #res = spider.list_items(parent_item={'type': 'directory', 'id': '149690', 'name': '网飞：[HD]/穿靴子的猫2', 'cover': 'https://vip-9-cdn-cn.4kya.com/cdn-9/k/upload/vod/20230107-1/4e701be66745164d7e50caf487032e17.jpg', 'description': '', 'cast': [], 'director': '', 'area': '', 'year': 0, 'sources': [], 'danmakus': [], 'subtitles': [], 'params': {'type': 'video', 'pf': 'T4', 'api': 'http://81.68.89.191:60007/6rse/', 'num': 0}}, page=1)
     #res = spider.getDanm("https%3A%2F%2Fwww.bilibili.com%2Fbangumi%2Fplay%2Fep718240")
-    #res = spider.search('县委大院', page=1)
+    #res = spider.search('穿靴子的猫2', page=1)
     #res = spider.checkPurl({'playfrom': 'NetflixFF', 'pf': 'T4', 'url': '3134303635352D352D31', 'api': 'http://81.68.89.191:60007/6rse'},'1')
     #res = spider.runSearch('黑', 'T4', 1, 3, '厂长@@@http://81.68.89.191:60007/6rse')
     #res = spider.getCookie('zzy')
