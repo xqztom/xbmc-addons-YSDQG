@@ -11,7 +11,7 @@ import xbmcaddon
 _ADDON = xbmcaddon.Addon()
 
 jsonurl = _ADDON.getSettingString('aliyundrive_refresh_token')
-#jsonurl = 'https://gitlab.com/lm317379829/ysdq/-/raw/main/YSDQ.json'
+#jsonurl = 'https://mpimg.cn/down.php/c8f9e6ed2446c6d5c6973df99ff2fbe1.json'
 if jsonurl.startswith('http'):
     try:
         jr = requests.get(jsonurl, verify=False, timeout=5)

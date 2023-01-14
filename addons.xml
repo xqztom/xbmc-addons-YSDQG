@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
 <addons>
-<?xml version="1.0" encoding="UTF-8"?>
 <addon id="plugin.video.ysdqg"
-version="1.0.0"
+version="1.0.1"
 name="影视大全(改)"
 provider-name="ysdqg">
 <requires>
@@ -35,9 +34,9 @@ provider-name="ysdqg">
     <extension point="xbmc.addon.repository"
             name="YSDQG Add-ons">
         <dir minversion="19.0.0">
-            <info compressed="true">https://raw.githubusercontent.com/lm317379829/xbmc-addons-YSDQG/main/addons.xml</info>
-            <checksum>https://raw.githubusercontent.com/lm317379829/xbmc-addons-YSDQG/main/addons.xml.md5</checksum>
-            <datadir zip="true">https://raw.githubusercontent.com/lm317379829/xbmc-addons-YSDQG/main/repo</datadir>
+            <info compressed="true">https://toscode.gitee.com/lm317379829/xbmc-addons-YSDQG/raw/master/addons.xml</info>
+            <checksum>https://toscode.gitee.com/lm317379829/xbmc-addons-YSDQG/raw/master/addons.xml.md5</checksum>
+            <datadir zip="true">https://toscode.gitee.com/lm317379829/xbmc-addons-YSDQG/raw/master/repo</datadir>
         </dir>
     </extension>
     <extension point="xbmc.addon.metadata">

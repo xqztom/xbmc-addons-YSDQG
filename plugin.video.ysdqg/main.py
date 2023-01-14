@@ -216,7 +216,7 @@ def action_resolve_play_url(spider_class, parent_item, item):
     spider = spiders[spider_class]
     if len(item['sources']) > 1 and _ADDON.getSettingBool('source_dialog_switch'):
         names = []
-        if 'params' in item and 'speedtest' in item['params'] and str(item['params']['speedtest']) != '0':
+        if 'params' in item and 'speedtest' in item['params']:
             i = 0
             contents = []
             with concurrent.futures.ThreadPoolExecutor(max_workers=item['params']['thlimit']) as executor:

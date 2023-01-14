@@ -350,7 +350,7 @@ class Spideryingshi(Spider):
                 titleInfos = []
                 titleList = re.findall(r'playlist\d+\" data-toggle=\"tab\">(.*?)</a>', r.text)
                 if titleList == []:
-                    titleList = re.findall(r'class=\"hl-tabs-btn hl-slide-swiper active\".*?<i class=\"iconfont hl-icon-shipin\"></i>(.*?)</a>', r.text)
+                    titleList = re.findall(r'class=\"hl-tabs-btn hl-slide-swiper.*?<i class=\"iconfont hl-icon-shipin\"></i>(.*?)</a>', r.text)
                 i = 0
                 for episinfo in episinfos:
                     lennp = len(episinfo.select('li'))
@@ -752,7 +752,7 @@ class Spideryingshi(Spider):
                 if tspList[2] == 'proxy':
                     purl = get_proxy_url(Spideryingshi.__name__, self.proxy_m3u8.__name__,{'url': purl, 'headers': header})
                 return [tspDict, purl]
-        except Exception as e:
+        except Exception:
             return [{tag: 0}, '']
 
     def sub(self, string, p, c):
@@ -771,7 +771,7 @@ class Spideryingshi(Spider):
             response = requests.get(url, headers=header, stream=True, allow_redirects=False, verify=False, timeout=5)
             if 'video' in response.headers['Content-Type']:
                 response.close()
-                return self.SpeedInfo(url, header, tag)
+                return self.SpeedInfo(url, header, tag, url, 'nomral')
             if 'Location' in response.headers and response.text == '':
                 url = response.headers['Location']
                 response.close()
@@ -815,7 +815,7 @@ class Spideryingshi(Spider):
                     s_url = str
                     return self.SpeedInfo(s_url, header, tag, url, proxy)
             return self.SpeedInfo(s_url, header, tag, url, proxy)
-        except Exception as e:
+        except Exception:
             return {tag: 0}
 
     def SpeedInfo(self, url, header, tag, purl, proxy):
@@ -832,6 +832,8 @@ class Spideryingshi(Spider):
                     break
                 count += len(chunk)
                 sptime = time.time() - stime
+                if chunk.startswith(b'\xFF\xD8\xFF\xE0\x00\x10\x4A\x46\x49\x46') or chunk.startswith(b'\x89\x50\x4E\x47\x0D\x0A\x1A\x0A') or chunk.startswith(b'\x42\x4D'):
+                    proxy = 'proxy'
                 if count == int(r.headers['content-length']):
                     speed = int((count - count_tmp) / sptime)
                 if sptime > 0:
@@ -1355,7 +1357,7 @@ class Spideryingshi(Spider):
     #res = spider.list_items(parent_item={'type': 'directory', 'id': '/bd/bw-xianweidayuan/', 'name': '被窝：[完结]/县委大院', 'cover': 'https://pic.wujinpp.com/upload/vod/20221207-1/720ff4c2095d892e6e744d45bd5501d5.jpg', 'description': '《县委大院》是献礼党的“二十大”的一项重要作品。讲述了梅晓歌和他在新旧县委大院里先后两任同事们在新时代之大趋势、大变革之下，顺势而为一路前行，艰苦奋斗，纵横上下实现理想的故事。反应了新时期党员干部敢担', 'cast': [], 'director': '', 'area': '', 'year': 0, 'sources': [], 'danmakus': [], 'subtitles': [], 'params': {'type': 'video', 'pf': 'bw', 'num': 3}}, page=1)
     #res = spider.getDanm("https%3A%2F%2Fwww.bilibili.com%2Fbangumi%2Fplay%2Fep718240")
     #res = spider.search('县委大院', page=1)
-    #res = spider.checkPurl({'playfrom': '', 'pf': 'bw', 'url': '/bp/xianweidayuan-1-24/'},'bw')
+    #res = spider.checkPurl( {'playfrom': '', 'pf': 'bw', 'url': '/bp/xianweidayuan-1-1/'},'1')
     #res = spider.runSearch('县委大院', 'bw', page=1)
     #res = spider.getCookie('zzy')
     #print(res)
